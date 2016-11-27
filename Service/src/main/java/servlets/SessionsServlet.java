@@ -3,6 +3,7 @@ package servlets;
 import accounts.AccountService;
 import accounts.UserProfile;
 import com.google.gson.Gson;
+import dbService.DBException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,8 +47,12 @@ public class SessionsServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
-        UserProfile profile = accountService.getUserByLogin(login);
+        UserProfile profile = null;
+        try {
+            profile = accountService.getUserByLogin(login);
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
         if (profile == null || !profile.getPass().equals(pass)) {
             response.setContentType("text/html;charset=utf-8");
             response.getWriter().println("Unauthorized");
@@ -59,8 +64,8 @@ public class SessionsServlet extends HttpServlet {
         Gson gson = new Gson();
         String json = gson.toJson(profile);
         response.setContentType("text/html;charset=utf-8");
-        //response.getWriter().println(json);
-        response.getWriter().println("Authorized: " + login);
+        response.getWriter().println(json);
+        //response.getWriter().println("Authorized: " + login);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
