@@ -4,6 +4,7 @@ package accounts;
 import dbService.DBException;
 import dbService.DBService;
 import dbService.DBService;
+import dbService.DBServiceInterface;
 import dbService.dataSets.UsersDataSet;
 
 import java.util.HashMap;
@@ -13,9 +14,9 @@ import java.util.Map;
 public class AccountService {
     private final Map<String, UserProfile> loginToProfile;
     private final Map<String, UserProfile> sessionIdToProfile;
-    private DBService dbService;
+    private DBServiceInterface dbService;
 
-    public AccountService(DBService dbService) {
+    public AccountService(DBServiceInterface dbService) {
         loginToProfile = new HashMap<>();
         sessionIdToProfile = new HashMap<>();
         this.dbService = dbService;

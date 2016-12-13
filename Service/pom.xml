@@ -9,13 +9,15 @@
     <version>1.0</version>
 
      <properties>
-        <com.h2database.h2.version>1.4.187</com.h2database.h2.version>
-        <postgresql.postgresql-connector-java.version>5.1.35</postgresql.postgresql-connector-java.version>
-        <org.hibernate.hibernate-core.version>4.3.10.Final</org.hibernate.hibernate-core.version>
-    </properties>
+         <com.h2database.h2.version>1.4.187</com.h2database.h2.version>
+         <postgresql.postgresql-connector-java.version>9.4.1207.jre7</postgresql.postgresql-connector-java.version>
+         <org.hibernate.hibernate-core.version>4.3.10.Final</org.hibernate.hibernate-core.version>
+         <org.eclipse.jetty.version>9.3.0.M0</org.eclipse.jetty.version>
+     </properties>
 
     <build>
-        <plugins>
+      <plugins>
+	
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -25,6 +27,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+	    
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
 
@@ -42,6 +45,7 @@
                     </archive>
                 </configuration>
             </plugin>
+
         </plugins>
         <resources>
             <resource>
@@ -72,18 +76,30 @@
             <artifactId>jetty-webapp</artifactId>
             <version>9.3.0.M0</version>
         </dependency>
+
+	    <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-servlet</artifactId>
+            <version>${org.eclipse.jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>${org.eclipse.jetty.version}</version>
+        </dependency>
 	
-	<dependency>
+	    <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.3.1</version>
         </dependency>
 
-	<dependency>
-	   <groupId>org.postgresql</groupId>
-	   <artifactId>postgresql</artifactId>
-	   <version>${postgresql.postgresql-connector-java.version}</version>
-	</dependency>
+	    <dependency>
+	       <groupId>org.postgresql</groupId>
+	       <artifactId>postgresql</artifactId>
+	       <version>${postgresql.postgresql-connector-java.version}</version>
+	    </dependency>
 	
         <dependency>
             <groupId>com.h2database</groupId>
@@ -95,6 +111,18 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${org.hibernate.hibernate-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
         </dependency>
 
     </dependencies>

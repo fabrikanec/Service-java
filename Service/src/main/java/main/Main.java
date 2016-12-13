@@ -11,6 +11,7 @@ import servlets.*;
 import dbService.DBException;
 import dbService.DBService;
 import dbService.dataSets.UsersDataSet;
+import chat.WebSocketChatServlet;
 
 
 public class Main {
@@ -26,9 +27,11 @@ public class Main {
         context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
         context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
         context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
+	    context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
         context.addServlet(new ServletHolder(allRequestsServlet), "/*");
 
         ResourceHandler resource_handler = new ResourceHandler();
+	    resource_handler.setDirectoriesListed(true);
         resource_handler.setResourceBase("public_html");
 
         HandlerList handlers = new HandlerList();
