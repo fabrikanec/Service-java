@@ -1,47 +1,137 @@
 package main;
 
-import accounts.AccountService;
+import accountServer.AccountServer;
+import accountServer.AccountServerController;
+import accountServer.AccountServerControllerMBean;
+import accountServer.AccountServerI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import resourceServer.ResourceServer;
+import resourceServer.ResourceServerController;
+import resourceServer.ResourceServerControllerMBean;
+import resourceServer.ResourceServerI;
+import resources.DBParametersResource;
+import sax.ReadXMLFileSAX;
+import servlets.HomePageServlet;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.util.Properties;
+
+import accounts.AccountService;
 import servlets.*;
-import dbService.DBException;
 import dbService.DBService;
-import dbService.dataSets.UsersDataSet;
 import chat.WebSocketChatServlet;
 
-
 public class Main {
+    private static final Logger logger = LogManager.getLogger(main.Main.class.getName());
+
     public static void main(String[] args) throws Exception {
-        DBService dbService = new DBService();
-	    AccountService accountService = new AccountService(dbService);
+        /*Properties properties = new Properties();
+        try (InputStream input = new FileInputStream("config.properties")) {
+            properties.load(input);
 
-        //dbService.printConnectInfo();
 
-        AllRequestsServlet allRequestsServlet = new AllRequestsServlet();
+            System.out.println(properties.getProperty("database"));
+            System.out.println(properties.getProperty("dbuser"));
+            System.out.println(properties.getProperty("dbpassword"));
 
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+
+
+         RandomAccessFile aFile = new RandomAccessFile("data/data.txt", "rw");
+        FileChannel inChannel = aFile.getChannel();
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        int bytesRead = inChannel.read(buf);
+        while (bytesRead != -1) {
+
+            System.out.println("Read " + bytesRead);
+            buf.flip();
+
+            while (buf.hasRemaining()) {
+                System.out.print((char) buf.get());
+            }
+            System.out.print("\n");
+            buf.clear();
+            bytesRead = inChannel.read(buf);
+        }
+        aFile.close();
+
+        int count;
+
+        try (SeekableByteChannel = fileChannel = Files.newByteChannel(Paths.get("data/nio-data.txt"))) {
+
+            ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
+
+            do {
+            // читаем файл и т.п.
+            } while (count != -1);
+        } catch (...) {...}
+        */
+
+        if (args.length != 1) {
+            logger.error("Use port as the first argument");
+            System.exit(1);
+        }
+        String portString = args[0];
+        final int port = Integer.valueOf(portString);
+
+        logger.info("Starting at http://127.0.0.1:" + portString);
+
+        AccountServerI accountServer = new AccountServer(10);
+        ResourceServerI resourceServer = new ResourceServer();
+
+        AccountServerControllerMBean serverStatistics = new AccountServerController(accountServer);
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName name = new ObjectName("Admin:type=AccountServerController");
+        mbs.registerMBean(serverStatistics, name);
+
+        ResourceServerControllerMBean resourceServerBean = new ResourceServerController(resourceServer);
+        mbs = ManagementFactory.getPlatformMBeanServer();
+        name = new ObjectName("Admin:type=ResourceServerController");
+        mbs.registerMBean(resourceServerBean, name);
+
+        Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+
+        DBService dbService = new DBService();
+        AccountService accountService = new AccountService(dbService);
+        dbService.printConnectInfo();
+
+        context.addServlet(new ServletHolder(new ResourceRequestServlet(resourceServer)), ResourceRequestServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new AdminRequestServlet(accountServer)), AdminRequestServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(new HomePageServlet(accountServer)), HomePageServlet.PAGE_URL);
         context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
         context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
         context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
-	    context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
-        context.addServlet(new ServletHolder(allRequestsServlet), "/*");
+        context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/src/chat");
+        context.addServlet(new ServletHolder(new AllRequestsServlet()), "/*");
 
         ResourceHandler resource_handler = new ResourceHandler();
-	    resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("public_html");
+        resource_handler.setDirectoriesListed(true);
+        resource_handler.setResourceBase("static");
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
-
-        Server server = new Server(8080);
         server.setHandler(handlers);
 
         server.start();
-        java.util.logging.Logger.getGlobal().info("Server started");
+
+        logger.info("Server started");
+
         server.join();
     }
 }
