@@ -1,7 +1,11 @@
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/Address.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/MessageSystem.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/reflection/ReflectionHelper.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resourceServer/ResourceServerController.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resourceServer/ResourceServerI.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/MessageToDB.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/reflection/Types.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/WrongTargetMessageException.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/servlets/SignUpServlet.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/servlets/SignInServlet.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resources/DBParametersResource.java
@@ -9,6 +13,7 @@
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/dbService/dao/UsersDAO.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/dbService/DBServiceInterface.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resourceServer/ResourceServerControllerMBean.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/Message.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/accountServer/AccountServerI.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/sax/ReadXMLFileSAX.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/sax/SaxHandler.java
@@ -18,8 +23,11 @@
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/dbService/dataSets/UsersDataSet.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/accounts/UserProfile.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/servlets/ResourceRequestServlet.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/MessageAuthentificate.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resourceServer/ResourceServer.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/Abonent.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/templater/PageGenerator.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/Services/FrontEnd.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/accountServer/AccountServerController.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/servlets/AllRequestsServlet.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/resources/TestResource.java
@@ -31,3 +39,4 @@
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/dbService/DBException.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/sax/LogSaxHandler.java
 /home/cezar/ServiceProject/Service-java/Service/src/main/java/accountServer/AccountServer.java
+/home/cezar/ServiceProject/Service-java/Service/src/main/java/messageSystem/Executor.java

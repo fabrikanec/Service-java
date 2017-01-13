@@ -4,6 +4,9 @@ import accountServer.AccountServer;
 import accountServer.AccountServerController;
 import accountServer.AccountServerControllerMBean;
 import accountServer.AccountServerI;
+import accounts.UserProfile;
+import dbService.DBException;
+import dbService.dataSets.MessageDataSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -30,6 +33,7 @@ import accounts.AccountService;
 import servlets.*;
 import dbService.DBService;
 import chat.WebSocketChatServlet;
+import sockets.SocketService;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(main.Main.class.getName());
@@ -47,7 +51,6 @@ public class Main {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
 
 
          RandomAccessFile aFile = new RandomAccessFile("data/data.txt", "rw");
@@ -129,9 +132,70 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
+        //sockets
 
+        Runnable socketServer = () -> {
+            try {
+                new SocketService("localhost", 5050).startServer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+        new Thread(socketServer);
+        //
         logger.info("Server started");
-
+        //testDB(dbService, accountService);
         server.join();
+    }
+
+    public static void testDB(DBService dbService, AccountService accountService) throws DBException{
+        //insert to db
+        Long id = accountService.addNewUser(new UserProfile("todd", "Valio"));
+        System.out.println(accountService.getUserProfileByLogin("todd").getPass());
+        Long id1 = accountService.addNewUser(new UserProfile("Valio", "Todd"));
+
+        Long id_article = accountService.addArticle(id, '0', "text", new java.util.Date());
+        Long id_event =  accountService.addEvent(id, "name", "TOO MUCH TEXT EVENT", "some subj");
+        System.out.println(accountService.getArticleText(id_article));
+
+        Long id_article1 = accountService.addArticle(id, '0', "anothertext", new java.util.Date());
+        System.out.println(accountService.getArticleText(id_article));
+        System.out.println(accountService.getEventText(id_event));
+
+        Long _id_event = accountService.addEvent(id, "name", "TOO", "some subj");
+        System.out.println(accountService.getArticleText(id_article1));
+        System.out.println(accountService.getEventText(_id_event));
+        System.out.println(accountService.getEventText(id_event));
+        System.out.println(accountService.getArticleText(id_article));
+
+        Long id_comment = accountService.addComment(id, id_article, id_event, "kekich");
+        Long id_comment1 = accountService.addComment(id, id_article, id_event, "lolich");
+        System.out.println(accountService.getCommentText(id_comment1));
+        System.out.println(accountService.getCommentText(id_comment));
+        System.out.println(accountService.getCommentText(id_comment));
+        System.out.println(accountService.getCommentText(id_comment1));
+
+        MessageDataSet.BoolType boolType = new MessageDataSet.BoolType();
+        Long id_msg = accountService.addMessage(id, false, false, "msg", new java.util.Date());
+        Long id_msg1 = accountService.addMessage(id, false, false, "msg666", new java.util.Date());
+        accountService.addMessage(id, false, false, "msg13", new java.util.Date());
+
+        System.out.println(accountService.getMessageText(id_msg));
+        System.out.println(accountService.getMessageText(id_msg1));
+
+        accountService.addUser(accountService.getUserByLogin("todd"), "Community");
+        accountService.addUser(accountService.getUserByLogin("Valio"), "Community");
+        Long fromComUser = accountService.getUsers("Community").get(0).getId();
+        Long fromComUser1 = accountService.getUsers("Community").get(1).getId();
+        System.out.println((fromComUser.equals(id)));
+        System.out.println(fromComUser1.equals(id1));
+
+        Long id_friend = accountService.addNewUser(new UserProfile("Volly", "Valio"));
+        accountService.addFriend(accountService.getUserByLogin("Volly"), accountService.getUserByLogin("todd"));
+        System.out.println(accountService.getFriend(id_friend).equals(id));
+        //
+        System.out.println(accountService.count_comm());
+        System.out.println(accountService.count_msg());
+        //
     }
 }

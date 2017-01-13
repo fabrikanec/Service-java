@@ -25,7 +25,7 @@ public class SignUpServlet extends HttpServlet {
         //check if login is available
         UserProfile profile = null;
         try {
-            profile = accountService.getUserByLogin(login);
+            profile = accountService.getUserProfileByLogin(login);
         } catch (DBException e) {
             e.printStackTrace();
         }

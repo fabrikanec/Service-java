@@ -30,7 +30,7 @@ public class SignInServlet extends HttpServlet {
 
         UserProfile profile = null;
         try {
-            profile = accountService.getUserByLogin(login);
+            profile = accountService.getUserProfileByLogin(login);
         } catch (DBException e) {
             e.printStackTrace();
         }

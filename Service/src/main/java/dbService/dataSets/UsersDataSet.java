@@ -2,17 +2,19 @@ package dbService.dataSets;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "users")
 public class UsersDataSet implements Serializable { // Serializable Important to Hibernate!
-    private static final long serialVersionUID = -8706689714326132798L;
+    private static final Long serialVersionUID = -8706689714326132798L;
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id = 0L;
 
     @Column(name = "login", unique = true, updatable = false)
     private String login;
@@ -20,24 +22,57 @@ public class UsersDataSet implements Serializable { // Serializable Important to
     @Column(name = "password", updatable = false)
     private String password;
 
+    @Column (name = "name")
+    private String name;
+
+    @Column (name = "surname")
+    private String surname;
+
+    @ManyToMany(targetEntity = CommunityDataSet.class, mappedBy="users") //, fetch = FetchType.LAZY
+    private Set<Long> communities = new HashSet<>();
+
+    @ManyToMany(targetEntity = CommunityDataSet.class, mappedBy="users")
+    private Set<Long> friends = new HashSet<>();
+
     //Important to Hibernate!
     @SuppressWarnings("UnusedDeclaration")
     public UsersDataSet() {
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public UsersDataSet(long id, String login, String password) {
-        this.setId(id);
-        this.setLogin(login);
-        this.setPassword(password);    }
-
-    public UsersDataSet(String login, String password) {
-        this.setId(-1);
+    public UsersDataSet(Long id, String login, String password, String name, String surname) {
+        //this.setId(id);
         this.setLogin(login);
         this.setPassword(password);
+        this.setName(name);
+        this.setSurname(surname);
     }
 
     @SuppressWarnings("UnusedDeclaration")
+    public UsersDataSet(Long id, String login, String password) {
+        //this.setId(id);
+        this.setLogin(login);
+        this.setPassword(password);
+        this.setName(login);
+        this.setSurname("");
+    }
+
+    public UsersDataSet(String login, String password) {
+        //this.setId(++this.id);
+        this.setLogin(login);
+        this.setPassword(password);
+        this.setName(login);
+        this.setSurname("");
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getLogin() {
         return login;
@@ -55,14 +90,44 @@ public class UsersDataSet implements Serializable { // Serializable Important to
         this.password = password;
     }
 
-
-    public long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) { this.surname = surname; }
+
+    public Set<Long> getCommunities() {
+        return communities;
+    }
+
+    public Set<Long> getFriends() {
+        return friends;
+    }
+
+    public void setCommunities(Set<Long> communities) {
+        this.communities = communities;
+    }
+
+    public void setFriends(Set<Long> friends) {
+        this.friends = friends;
+    }
+
+    public void setCommunity(Long community_id) {
+        this.communities.add(community_id);
+    }
+
+    public void setFriend(Long friend_id) {
+        this.friends.add(friend_id);
+    }
+
 
     @Override
     public String toString() {
